@@ -18,12 +18,12 @@ void DisplayMenu() {
     cout << "1.  Grayscale Conversion\n";
     cout << "2.  Black and White\n";
     cout << "3.  Invert Image\n";
-    cout << "4.  Merge Images\n";
+    cout << "4.  Adding Frame to the Picture \n";
     cout << "5.  Flip Image\n";
     cout << "6.  Rotate Image\n";
     cout << "7.  Darken and Lighten Image\n";
     cout << "8.  Crop Images\n";
-    cout << "9.  Adding a Frame to the Picture\n";
+    cout << "9.  Merge Images\n";
     cout << "10. Detect Image Edges\n";
     cout << "11. Resizing Images\n";
     cout << "12. Blur Images\n";
@@ -46,6 +46,84 @@ void DisplayMenu() {
     marina3,7,11,15
     maro  4,8,12,16
 */
+enum enBorderColor {White,Black,Blue,Green,Red,Unknown};
+void AddFrame(Image& image) // filter No.4 Marwan
+{
+    cout << "Choose Frame style:\n";
+    cout << "1. Simple Frame\n";
+    cout << "2. Fancy Frame\n";
+    int option;
+    cin >> option;
+
+    if (option == 1)
+    {
+    string color;
+
+    cout << "Choose Your Color (White, Black, Blue, Green, Red): \n";
+    cin >> ws;           //to clean the buffer for getline 
+    getline(cin, color);
+
+    for (char& c : color) // to allow any typo Red ReD rED reD etc
+    {
+        c = tolower(c);
+    }
+    enBorderColor selectedColor = Unknown; //for Switch case 
+    if (color == "white")
+        selectedColor = White;
+    else if (color == "black")
+        selectedColor = Black;
+    else if (color == "blue")
+        selectedColor = Blue;
+    else if (color == "green")
+        selectedColor = Green;
+    else if (color == "red")
+        selectedColor = Red;
+    int thickness;
+    cout << "Enter your thickness: ";
+    cin >> thickness;
+    int r = 0, g = 0, b = 0;
+    switch (selectedColor)
+    {
+    case White:
+        r = 255, g = 255, b = 255;
+        break;
+    case Black:
+        r = 0, g = 0, b = 0;
+        break;
+    case Blue:
+        r = 0, g = 0, b = 255;
+        break;
+    case Green:
+        r = 0, g = 255, b = 0;
+        break;
+    case Red:
+        r = 255, g = 0, b = 0;
+        break;
+    default:
+        cout << "Invalid Color\n";
+        return;
+    }
+
+    int colorValue[3] = {r, g, b};  
+
+    for (int i = 0; i < image.width; ++i)
+    {
+        for (int j = 0; j < image.height; ++j)
+        {
+            if (i < thickness ||                //left
+                i >= image.width - thickness || //right
+                j < thickness ||                //top
+                j >= image.height - thickness)  //bottom
+            {
+                for (int k = 0; k < 3; ++k)
+                {
+                    image(i, j, k) = colorValue[k];
+                }
+            }
+        }
+    }
+}
+}
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
     {
@@ -59,7 +137,8 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             //filterInvert(currentImage);
         break;
     case 4:
-            // Merge Images
+         AddFrame(CurrentImage);
+        
         break;
     case 5:
             // Flip Image
@@ -74,7 +153,7 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             // Crop Images
         break;
     case 9:
-            // Adding Frame
+            // Merge Images
         break;
     case 10:
             // Detect Edges
