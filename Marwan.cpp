@@ -46,40 +46,31 @@ void DisplayMenu() {
     marina3,7,11,15
     maro  4,8,12,16
 */
-enum enBorderColor {White,Black,Blue,Green,Red,Unknown};
-void AddFrame(Image& image) // filter No.4 Marwan
+enum enColor {White,Black,Blue,Green,Red,Unknown};
+
+enColor GetColor(string color)
 {
-    cout << "Choose Frame style:\n";
-    cout << "1. Simple Frame\n";
-    cout << "2. Fancy Frame\n";
-    int option;
-    cin >> option;
-
-    string color;
-
-    cout << "Choose Your Color (White, Black, Blue, Green, Red): \n";
-    cin >> ws;           //to clean the buffer for getline 
-    getline(cin, color);
-
-    for (char& c : color) // to allow any typo Red ReD rED reD etc
+    for (char& c : color)
     {
         c = tolower(c);
     }
 
-    enBorderColor selectedColor = Unknown; //for Switch case 
     if (color == "white")
-        selectedColor = White;
+        return White;
     else if (color == "black")
-        selectedColor = Black;
+        return Black;
     else if (color == "blue")
-        selectedColor = Blue;
+        return Blue;
     else if (color == "green")
-        selectedColor = Green;
+        return Green;
     else if (color == "red")
-        selectedColor = Red;
+        return Red;
+    else
+        return Unknown;
+}
 
-    int r = 0, g = 0, b = 0;
-
+void GetRGB(enColor selectedColor, int& r, int& g, int& b)
+{
     switch (selectedColor)
     {
     case White:
@@ -98,9 +89,35 @@ void AddFrame(Image& image) // filter No.4 Marwan
         r = 255, g = 0, b = 0;
         break;
     default:
+        r = 0, g = 0, b = 0;
+    }
+}
+
+void AddFrame(Image& image) // filter No.4 Marwan
+{
+    cout << "Choose Frame style:\n";
+    cout << "1. Simple Frame\n";
+    cout << "2. Fancy Frame\n";
+    int option;
+    cin >> option;
+
+    string color;
+
+    cout << "Choose Your Color (White, Black, Blue, Green, Red): \n";
+    cin >> ws;           //to clean the buffer for getline 
+    getline(cin, color);
+
+    enColor selectedColor = GetColor(color); //for Switch case 
+
+    if (selectedColor == Unknown)
+    {
         cout << "Invalid Color\n";
         return;
     }
+
+    int r = 0, g = 0, b = 0;
+
+    GetRGB(selectedColor, r, g, b);
 
     int colorValue[3] = {r, g, b};  
 
@@ -109,6 +126,12 @@ void AddFrame(Image& image) // filter No.4 Marwan
         int thickness;
         cout << "Enter your thickness: ";
         cin >> thickness;
+
+        if (thickness <= 0)
+        {
+            cout << "Invalid Thickness\n";
+            return;
+        }
 
         for (int i = 0; i < image.width; ++i)
         {
@@ -133,6 +156,59 @@ void AddFrame(Image& image) // filter No.4 Marwan
         cout << "Enter your thickness: ";
         cin >> thickness;
 
+        if (thickness <= 0)
+        {
+            cout << "Invalid Thickness\n";
+            return;
+        }
+
+        string color2;
+
+        cout << "Choose Your Second Color (White, Black, Blue, Green, Red): \n";
+        cin >> ws;
+        getline(cin, color2);
+
+        enColor selectedColor2 = GetColor(color2);//link the color with th enum to get the values when i link with RGB fn 
+
+        if (selectedColor2 == Unknown)
+        {
+            cout << "Invalid Color\n";
+            return;
+        }
+
+        int r2 = 0, g2 = 0, b2 = 0;
+
+        GetRGB(selectedColor2, r2, g2, b2);  //get values for r ,b, g after linking with enum
+
+        int colorValue2[3] = {r2, g2, b2};
+
+        for (int i = 0; i < image.width; ++i)
+        {
+            for (int j = 0; j < image.height; ++j)
+            {
+                int layer = min(min(i, image.width - 1 - i), //to calculate the distance between pixel and edge 
+                                min(j, image.height - 1 - j)); //from 4 directions 
+
+                if (layer < thickness)
+                {
+                    int* currentColor;
+
+                    if (layer % 2 == 0)
+                        currentColor = colorValue;
+                    else
+                        currentColor = colorValue2;
+
+                    for (int k = 0; k < 3; ++k)
+                    {
+                        image(i, j, k) = currentColor[k];
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        cout << "Invalid Frame Style\n";
     }
 }
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
