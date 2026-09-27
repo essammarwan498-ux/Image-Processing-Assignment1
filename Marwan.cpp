@@ -55,8 +55,6 @@ void AddFrame(Image& image) // filter No.4 Marwan
     int option;
     cin >> option;
 
-    if (option == 1)
-    {
     string color;
 
     cout << "Choose Your Color (White, Black, Blue, Green, Red): \n";
@@ -67,6 +65,7 @@ void AddFrame(Image& image) // filter No.4 Marwan
     {
         c = tolower(c);
     }
+
     enBorderColor selectedColor = Unknown; //for Switch case 
     if (color == "white")
         selectedColor = White;
@@ -78,10 +77,9 @@ void AddFrame(Image& image) // filter No.4 Marwan
         selectedColor = Green;
     else if (color == "red")
         selectedColor = Red;
-    int thickness;
-    cout << "Enter your thickness: ";
-    cin >> thickness;
+
     int r = 0, g = 0, b = 0;
+
     switch (selectedColor)
     {
     case White:
@@ -106,23 +104,36 @@ void AddFrame(Image& image) // filter No.4 Marwan
 
     int colorValue[3] = {r, g, b};  
 
-    for (int i = 0; i < image.width; ++i)
+    if (option == 1)
     {
-        for (int j = 0; j < image.height; ++j)
+        int thickness;
+        cout << "Enter your thickness: ";
+        cin >> thickness;
+
+        for (int i = 0; i < image.width; ++i)
         {
-            if (i < thickness ||                //left
-                i >= image.width - thickness || //right
-                j < thickness ||                //top
-                j >= image.height - thickness)  //bottom
+            for (int j = 0; j < image.height; ++j)
             {
-                for (int k = 0; k < 3; ++k)
+                if (i < thickness ||                //left
+                    i >= image.width - thickness || //right
+                    j < thickness ||                //top
+                    j >= image.height - thickness)  //bottom
                 {
-                    image(i, j, k) = colorValue[k];
+                    for (int k = 0; k < 3; ++k)
+                    {
+                        image(i, j, k) = colorValue[k];
+                    }
                 }
             }
         }
     }
-}
+    else if (option == 2)
+    {
+        int thickness;
+        cout << "Enter your thickness: ";
+        cin >> thickness;
+
+    }
 }
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
@@ -180,8 +191,8 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
         CurrentImage= LoadImage("Enter the new image name with extension:");
         break;
     case 18: //save current Image 
-            {cout<<"Enter a Name to Store a New Image: ";
-            cout<<"And Specify Extention .jpg .bmp .png .tga";
+            {cout<<"Enter a Name to Store a New Image: \n";
+            cout<<"And Specify Extention: (.jpg, .bmp, .png, .tga) \n";
             string NewImageName;
             cin>> ws;
             getline(cin,NewImageName);
