@@ -55,90 +55,82 @@ void DisplayColorMenu()
     cout << "4. Green\n";
     cout << "5. Red\n";
 }
+int GetColorChoice(const string& message = "Choose Color Number: ") {
+    cout << message;
+    int ColorChoice;
+    cin >> ColorChoice;
+    
+    if (ColorChoice < 1 || ColorChoice > colors.size()) { 
+        cout << "Invalid Color\n";
+        return -1;
+    }
+    return ColorChoice;
+}
 void AddFrame(Image& image){ // filter No.4 Marwan
-    cout << "Choose Frame style:\n";
+    cout << "Available Frame styles:\n";
     cout << "1. Simple Frame\n";
     cout << "2. Fancy Frame\n";
+    cout << "Choose Frame Style: ";
     int option;
     cin >> option;
-    if (option == 1)
-    {
-        cout<<"Choose Your Color: \n";
-        DisplayColorMenu();
-        int ColorChoice;
-        cout<<"Enter Your Color Number: ";
-        cin>>ColorChoice;
-        if (colors.find(ColorChoice) == colors.end()) //checking if the color no is in range
-        {
-        cout << "Invalid Color\n";
+
+    if (option < 1 || option > 2) { //to limit the options
+        cout << "Invalid Frame Style\n";
         return;
     }
-        vector<int> ColorValue = colors[ColorChoice];
 
-        int thickness;
-        cout << "Enter your thickness: ";
-        cin >> thickness;
+    cout << "Enter frame thickness: ";
+    int thickness;
+    cin >> thickness;
 
-        int MaxThickness= min(image.height, image.width)/2;
-        if (thickness <= 0||thickness >= MaxThickness)
-        {
-            cout << "Invalid Thickness\n";
-            return;
-        }
+    int MaxThickness= min(image.height, image.width)/2;  //Validate the thickness to not exceed the half of photo 
+    if (thickness <= 0 || thickness > MaxThickness)
+    {
+        cout << "Invalid Thickness\n";
+        return;
+    }
 
-        for (int i = 0; i < image.width; ++i)
-        {
-            for (int j = 0; j < image.height; ++j)
-            {
+    DisplayColorMenu();                     //displaying the 5 colors to choose      
+    int Color1Choice = GetColorChoice();    //get the value from from getcolorvalue 
+    if (Color1Choice == -1) {               //for wrong choice
+        return;
+    }
+    vector<int> Color1Value = colors[Color1Choice]; //colors[1] = white and this is the values come from map
+
+    if (option == 1){
+        for (int i = 0; i < image.width; ++i) {
+            for (int j = 0; j < image.height; ++j) {
                 if (i < thickness ||i >= image.width - thickness ||j < thickness ||j >= image.height - thickness){
-                    for (int k = 0; k < 3; ++k){image(i, j, k) = ColorValue[k];}}
+                    for (int k = 0; k < 3; ++k) {image(i, j, k) = Color1Value[k];}
+                }
             }
         }
-    }
-    else if (option == 2)
-    {
-        cout<<"Choose Your First Color: \n";
-        DisplayColorMenu();
-        int ColorChoice;
-        cout<<"Enter Your Color Number: ";
-        cin>>ColorChoice;
-        if (colors.find(ColorChoice) == colors.end()) //checking if the color no is in range
-        {
-        cout << "Invalid Color\n";
         return;
     }
-        vector<int> ColorValue = colors[ColorChoice];
-        cout<<"Choose The Second Color: \n";
-        DisplayColorMenu();
-        int SecondColorChoice;
-        cin>>SecondColorChoice;
-        if(colors.find(SecondColorChoice)==colors.end()){
-            cout<<"Invalid Color \n";
-            return;}
-        int thickness;
-        cout << "Enter your thickness: ";
-        cin >> thickness;
-        int MaxThickness= min(image.height, image.width)/2;
-        if (thickness <= 0||thickness >= MaxThickness){
-            cout << "Invalid Thickness\n";
-            return;}
-        vector<int> ColorValue2 = colors[SecondColorChoice];
-        for (int i = 0; i < image.width; ++i)
-        {
-            for (int j = 0; j < image.height; ++j)
-            {
-                int layer = min(min(i, image.width - 1 - i),min(j, image.height - 1 - j));  
-                if (layer < thickness)
-                {
-                    if (layer % 2 == 0){
-                        for (int k = 0; k < 3; ++k){image(i, j, k) = ColorValue[k];}}
-                    else{
-                        for (int k = 0; k < 3; ++k){image(i, j, k) = ColorValue2[k];}}
+
+    int SecondColorChoice = GetColorChoice("Choose The Second Color Number: ");
+    if (SecondColorChoice == -1) {
+        return;
+    }
+    vector<int> Color2Value = colors[SecondColorChoice];
+
+    for (int i = 0; i < image.width; ++i) {
+        for (int j = 0; j < image.height; ++j) {
+            int layer = min(min(i, image.width - 1 - i),min(j, image.height - 1 - j));  //check the layer from the edge from all directions
+            if (layer < thickness) {            //if the layer in frame zone will be colored
+                if (layer % 2 == 0){ //if layer even =color 1 else color 2 
+                    for (int k = 0; k < 3; ++k) {
+                        image(i, j, k) = Color1Value[k];
+                    }
+                } 
+                else{
+                    for (int k = 0; k < 3; ++k) {
+                        image(i, j, k) = Color2Value[k];
+                    }
                 }
             }
         }
     }
-    else{cout << "Invalid Frame Style\n";}
 }
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
