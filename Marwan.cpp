@@ -24,15 +24,15 @@ void DisplayMenu() {
     cout << "5.  Flip Image\n";
     cout << "6.  Rotate Image\n";
     cout << "7.  Darken and Lighten Image\n";
-    cout << "8.  Crop Images\n";
+    cout << "8.  Resizing Images\n";
     cout << "9.  Merge Images\n";
     cout << "10. Detect Image Edges\n";
-    cout << "11. Resizing Images\n";
+    cout << "11. Crop Images\n";
     cout << "12. Blur Images\n";
-    cout << "13. Natural Sun Light\n";
-    cout << "14. Oil Painting Effect\n";
-    cout << "15. Old TV Effect\n";
-    cout << "16. Purple Effect\n";
+    cout << "13.Sunlight / Brightness Correction (Wano Sunlight)\n";
+    cout << "14. TV Screen Effect (Den Den Mushi TV)\n";
+    cout << "15. Purple Night Effect\n"; //Purple Effect
+    cout << "16. Infrared Photography\n";
     cout << "----------------------------------------\n";
     cout << "17. Load a New Image\n";
     cout << "18. Save the Current Image\n";
@@ -59,7 +59,7 @@ int GetColorChoice(const string& message = "Choose Color Number: ") {
     cout << message;
     int ColorChoice;
     cin >> ColorChoice;
-    
+
     if (ColorChoice < 1 || ColorChoice > colors.size()) { 
         cout << "Invalid Color\n";
         return -1;
@@ -118,7 +118,7 @@ void AddFrame(Image& image){ // filter No.4 Marwan
         for (int j = 0; j < image.height; ++j) {
             int layer = min(min(i, image.width - 1 - i),min(j, image.height - 1 - j));  //check the layer from the edge from all directions
             if (layer < thickness) {            //if the layer in frame zone will be colored
-                if (layer % 2 == 0){ //if layer even =color 1 else color 2 
+                if (layer % 2 == 0){            //if layer even =color 1 else color 2 
                     for (int k = 0; k < 3; ++k) {
                         image(i, j, k) = Color1Value[k];
                     }
@@ -131,6 +131,46 @@ void AddFrame(Image& image){ // filter No.4 Marwan
             }
         }
     }
+}
+void ReSize(Image& image){
+    cout<<"Choose your Resize Method Number: \n";
+    cout<<"1.Dimensions \n";
+    cout<<"2.Ratio \n";
+    int Option ;
+    cin>> Option;
+    if(Option < 1 ||Option > 2){
+        cout<<"Invalid Resize Method \n";
+        return;
+    }
+        int NewWidth ,NewHight;
+    if(Option == 1){
+        cout<<"Please Enter a New Width and Hight \n";
+        cin>>NewWidth >>NewHight;
+    }else{
+    double Ratio;
+    cout<<"Enter a Ratio to Resize\n";
+    cin>>Ratio;
+    if(Ratio <=0){
+        cout<<"Invalid Ratio \n";
+        return;
+    }
+    NewWidth =image.width * Ratio ;
+    NewHight =image.height * Ratio;}
+    if(NewWidth <= 0 || NewHight <=0){
+        cout<<"Invalid Dimensions \n";
+        return;
+    }
+    Image NewImage (NewWidth ,NewHight);
+        for(int i = 0; i < NewImage.width; ++i){
+            for(int j = 0; j<NewImage.height; ++j){
+                int old_X = i* image.width / NewImage.width;
+                int old_Y = j * image.height / NewImage.height;
+                for(int k=0; k<3;++k){
+                    NewImage(i,j,k)=image(old_X,old_Y,k);
+                }
+            }
+        }
+        image = NewImage;
 }
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
@@ -156,8 +196,8 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     case 7:
             // Darken and Lighten
         break;
-    case 8:
-            // Crop Images
+    case 8: //Resizing Image
+            ReSize(CurrentImage);
         break;
     case 9:
             // Merge Images
@@ -172,16 +212,16 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             // Blur Images
         break;
     case 13:
-            // Natural Sun Light
+            // Sunlight / Brightness Correction (Wano Sunlight)
         break;
     case 14:
-            // Oil Painting
+            // TV Screen Effect (Den Den Mushi TV)
         break;
     case 15:
-            // Old TV Effect
+            // Purple Night Effect (Purple Luffy)
         break;
     case 16:
-            // Purple Effect
+            //Infrared Photography
         break;
     case 17:  //load a new image 
         CurrentImage= LoadImage("Enter the new image name with extension:");
