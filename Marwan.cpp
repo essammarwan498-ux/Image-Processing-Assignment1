@@ -172,6 +172,7 @@ void ReSize(Image& image){
         }
         image = NewImage;
 }
+
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
     {
