@@ -76,37 +76,37 @@ void FilterGrayScale(Image& pic) {
 }
 
 // --- Filter 3 Marina(INVERT IMAGE) ---
-void InvertImage(Image& pic) {
-    for (int i = 0; i < pic.width; i++) {
-        for (int j = 0; j < pic.height; j++) {
-            for (int c = 0; c < pic.channels; c++) {
-                pic(i, j, c) = 255 - pic(i, j, c);
+void InvertImage(Image& image) {
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            for (int c = 0; c < image.channels; c++) {
+                image(i, j, c) = 255 - image(i, j, c);
             }
         }
     }
 }
 
-// --- Filter 5 (FLIP IMAGE) ---
-void FlipImage(Image& pic) {
+// --- Filter 5 Peter (FLIP IMAGE) ---
+void FlipImage(Image& image) {
     cout << "Choose Flip Direction:\n1. Horizontal\n2. Vertical\nEnter choice (1 or 2): ";
     int choice;
     cin >> choice;
 
     if (choice == 1) {
         // Horizontal Flip
-        for (int y = 0; y < pic.height; y++) {
-            for (int x = 0; x < pic.width / 2; x++) {
+        for (int y = 0; y < image.height; y++) {
+            for (int x = 0; x < image.width / 2; x++) {
                 for (int c = 0; c < 3; c++) {
-                    swap(pic(x, y, c), pic(pic.width - 1 - x, y, c));
+                    swap(image(x, y, c), image(image.width - 1 - x, y, c));
                 }
             }
         }
     } else if (choice == 2) {
         // Vertical Flip
-        for (int y = 0; y < pic.height / 2; y++) {
-            for (int x = 0; x < pic.width; x++) {
+        for (int y = 0; y < image.height / 2; y++) {
+            for (int x = 0; x < image.width; x++) {
                 for (int c = 0; c < 3; c++) {
-                    swap(pic(x, y, c), pic(x, pic.height - 1 - y, c));
+                    swap(image(x, y, c), image(x, image.height - 1 - y, c));
                 }
             }
         }
@@ -116,33 +116,33 @@ void FlipImage(Image& pic) {
 }
 
 // --- Filter 7 Marina(LIGHTEN & DARKEN IMAGE)___
-void LightenImage(Image& pic, float percentage) {
+void LightenImage(Image& image, float percentage) {
     float rate = percentage / 100.0;
-    for (int i = 0; i < pic.width; i++) {
-        for (int j = 0; j < pic.height; j++) {
-            for (int c = 0; c < pic.channels; c++) {
-                unsigned char oldcol = pic.getPixel(i, j, c);
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            for (int c = 0; c < image.channels; c++) {
+                unsigned char oldcol = image.getPixel(i, j, c);
                 int newcol = oldcol + (255 - oldcol) * rate;
                 if (newcol > 255) {
                     newcol = 255;
                 }
-                pic.setPixel(i, j, c, newcol);
+                image.setPixel(i, j, c, newcol);
             }
         }
     }
 }
 
-void DarkenImage(Image& pic, float percentage) {
+void DarkenImage(Image& image, float percentage) {
     float rate = 1.0 - (percentage / 100.0);
-    for (int i = 0; i < pic.width; i++) {
-        for (int j = 0; j < pic.height; j++) {
-            for (int c = 0; c < pic.channels; c++) {
-                unsigned char oldcol = pic.getPixel(i, j, c);
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            for (int c = 0; c < image.channels; c++) {
+                unsigned char oldcol = image.getPixel(i, j, c);
                 int newcol = oldcol * rate;
                 if (newcol < 0) {
                     newcol = 0;
                 }
-                pic.setPixel(i, j, c, newcol);
+                image.setPixel(i, j, c, newcol);
             }
         }
     }
