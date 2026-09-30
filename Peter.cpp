@@ -62,15 +62,15 @@ void DisplayColorMenu() {
 }
 
 // --- Filter 1 Peter (GRAYSCALE CONVERSION) ---
-void FilterGrayScale(Image& pic) {
-    for (int j = 0; j < pic.height; j++) {
-        for (int i = 0; i < pic.width; i++) {
-            unsigned char red   = pic(i, j, 0);
-            unsigned char green = pic(i, j, 1);
-            unsigned char blue  = pic(i, j, 2);
+void FilterGrayScale(Image& image) {
+    for (int j = 0; j < image.height; j++) {
+        for (int i = 0; i < image.width; i++) {
+            unsigned char red   = image(i, j, 0);
+            unsigned char green = image(i, j, 1);
+            unsigned char blue  = image(i, j, 2);
             
             int avg = (red + green + blue) / 3;
-            pic(i, j, 0) = pic(i, j, 1) = pic(i, j, 2) = avg;
+            image(i, j, 0) = image(i, j, 1) = image(i, j, 2) = avg;
         }
     }
 }
