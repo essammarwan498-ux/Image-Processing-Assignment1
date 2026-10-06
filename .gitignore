@@ -3,3 +3,7 @@
 *.o
 *.out
 build/
+*.jpg
+*.bmp
+*.png
+*.tga
