@@ -2,17 +2,18 @@
 #include "Image_Class.h"
 #include <vector>
 #include <map>
-using namespace std ;
+using namespace std;
 
-Image LoadImage(string Message){
-    cout<< Message<<endl;
+Image LoadImage(string Message) {
+    cout << Message << endl;
     string ImageFileName = "";
-    cin>>ws;                           //3lshan el white space 
-    getline(cin,ImageFileName);
+    cin >> ws;                           // 3lshan el white space 
+    getline(cin, ImageFileName);
     Image Img(ImageFileName);
 
     return Img;
 }
+
 void DisplayMenu() {
     cout << "\n========================================\n";
     cout << "      IMAGE PROCESSING PROGRAM MENU     \n";
