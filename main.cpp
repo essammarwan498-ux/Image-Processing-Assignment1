@@ -340,6 +340,7 @@ void ReSize(Image& image){
         cout<<"Invalid Dimensions \n";
         return;
     }
+
     Image NewImage (NewWidth ,NewHight);
         for(int i = 0; i < NewImage.width; ++i){
             for(int j = 0; j<NewImage.height; ++j){
@@ -436,14 +437,14 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
         break;
     }
 }
-int main(){
+int main() {
     bool IsRunning = true;
     int Choice;
     Image CurrentImage = LoadImage("Please Enter your Image Name: ");
-    while (IsRunning){
+    while (IsRunning) {
         DisplayMenu();
-        cin>>Choice;
-        ProcessChoice(Choice , CurrentImage , IsRunning);
+        cin >> Choice;
+        ProcessChoice(Choice, CurrentImage, IsRunning);
     }
     return 0;
 }
