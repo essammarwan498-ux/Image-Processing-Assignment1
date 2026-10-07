@@ -24,23 +24,33 @@ Image LoadImage(string Message){
     return Img;
 }
 void DisplayMenu() {
-    cout << "\n========================================\n";
-    cout << "      IMAGE PROCESSING PROGRAM MENU     \n";
-    cout << "========================================\n";
-    cout << "1.  Grayscale Conversion\n";
-    cout << "2.  Black and White\n";
-    cout << "3.  Invert Image\n";
-    cout << "4.  Adding Frame to the Picture \n";
-    cout << "5.  Flip Image\n";
-    cout << "6.  Rotate Image\n";
-    cout << "7.  Darken and Lighten Image\n";
-    cout << "8.  Resizing Images\n";
-    cout << "----------------------------------------\n";
-    cout << "9. Load a New Image\n";
-    cout << "10. Save the Current Image\n";
-    cout << "11. Exit Program\n";
-    cout << "========================================\n";
-    cout << "Please enter your choice (1-11): ";
+	cout << "\n========================================\n";
+	cout << " IMAGE PROCESSING PROGRAM MENU \n"; 
+	cout << "========================================\n"; 
+	cout << "1. Grayscale Conversion\n"; 
+	cout << "2. Black and White\n"; 
+	cout << "3. Invert Image\n"; 
+	cout << "4. Adding Frame to the Picture \n"; 
+	cout << "5. Flip Image\n"; 
+	cout << "6. Rotate Image\n"; 
+	cout << "7. Darken and Lighten Image\n"; 
+	cout << "8. Resizing Image\n";
+	cout << "9. Merge Images\n"; 
+	cout << "10. Detect Image Edges\n"; 
+	cout << "11. Crop Images\n"; 
+	cout << "12. Blur Images\n"; 
+	cout << "13. Sunlight / Brightness Correction \n"; 
+	cout << "14. TV Screen Effect \n"; 
+	cout << "15. Purple Night Effect \n"; 
+	cout << "16. Infrared Photography\n"; 
+	cout << "17. Skewing / Distortion\n";
+	cout << "18. Oil Painting Effect\n"; 
+	cout << "----------------------------------------\n"; 
+	cout << "19. Load a New Image\n"; 
+	cout << "20. Save the Current Image\n"; 
+	cout << "21. Exit Program\n"; 
+	cout << "========================================\n"; 
+	cout << "Please enter your choice (1-21): "; 
 }
 // --- Filter 1 Peter (GRAYSCALE CONVERSION) ---
 void FilterGrayScale(Image& image) {
