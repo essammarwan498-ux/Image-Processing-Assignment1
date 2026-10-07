@@ -17,13 +17,12 @@ using namespace std ;
 Image LoadImage(string Message){
     cout<< Message<<endl;
     string ImageFileName = "";
-    cin>>ws;
+    cin>>ws;                           //3lshan el white space 
     getline(cin,ImageFileName);
     Image Img(ImageFileName);
 
     return Img;
 }
-
 void DisplayMenu() {
     cout << "\n========================================\n";
     cout << "      IMAGE PROCESSING PROGRAM MENU     \n";
@@ -36,15 +35,13 @@ void DisplayMenu() {
     cout << "6.  Rotate Image\n";
     cout << "7.  Darken and Lighten Image\n";
     cout << "8.  Resizing Images\n";
-    cout << "9.  Crop Image\n";
     cout << "----------------------------------------\n";
-    cout << "10. Load a New Image\n";
-    cout << "11. Save the Current Image\n";
-    cout << "12. Exit Program\n";
+    cout << "9. Load a New Image\n";
+    cout << "10. Save the Current Image\n";
+    cout << "11. Exit Program\n";
     cout << "========================================\n";
-    cout << "Please enter your choice (1-12): ";
+    cout << "Please enter your choice (1-11): ";
 }
-
 // --- Filter 1 Peter (GRAYSCALE CONVERSION) ---
 void FilterGrayScale(Image& image) {
     for (int j = 0; j < image.height; j++) {
@@ -52,13 +49,12 @@ void FilterGrayScale(Image& image) {
             unsigned char red   = image(i, j, 0);
             unsigned char green = image(i, j, 1);
             unsigned char blue  = image(i, j, 2);
-
+            
             int avg = (red + green + blue) / 3;
             image(i, j, 0) = image(i, j, 1) = image(i, j, 2) = avg;
         }
     }
 }
-
 // filter 2 Mark emad
 void blackAndWhite(Image& image) {
     for (int _y = 0; _y < image.height; _y++) {
@@ -71,7 +67,6 @@ void blackAndWhite(Image& image) {
         }
     }
 }
-
 // --- Filter 3 Marina(INVERT IMAGE) ---
 void InvertImage(Image& image) {
     for (int i = 0; i < image.width; i++) {
@@ -82,15 +77,13 @@ void InvertImage(Image& image) {
         }
     }
 }
-
 map<int, vector<int>> colors = {
-    {1, {255, 255, 255}},
-    {2, {0, 0, 0}},
-    {3, {0, 0, 255}},
-    {4, {0, 255, 0}},
-    {5, {255, 0, 0}}
+    {1, {255, 255, 255}}, //white
+    {2, {0, 0, 0}},//black
+    {3, {0, 0, 255}}, //blue
+    {4, {0, 255, 0}},//green
+    {5, {255, 0, 0}} // red
 };
-
 void DisplayColorMenu()
 {
     cout << "1. White\n";
@@ -99,20 +92,18 @@ void DisplayColorMenu()
     cout << "4. Green\n";
     cout << "5. Red\n";
 }
-
 int GetColorChoice(const string& message = "Choose Color Number: ") {
     cout << message;
     int ColorChoice;
     cin >> ColorChoice;
 
-    if (ColorChoice < 1 || ColorChoice > 5) {
+    if (ColorChoice < 1 || ColorChoice > 5) { 
         cout << "Invalid Color\n";
         return -1;
     }
     return ColorChoice;
 }
-
-void AddFrame(Image& image){
+void AddFrame(Image& image){ // filter No.4 Marwan Essam
     cout << "Available Frame styles:\n";
     cout << "1. Simple Frame\n";
     cout << "2. Fancy Frame\n";
@@ -120,7 +111,7 @@ void AddFrame(Image& image){
     int option;
     cin >> option;
 
-    if (option < 1 || option > 2) {
+    if (option < 1 || option > 2) { //to limit the options
         cout << "Invalid Frame Style\n";
         return;
     }
@@ -129,31 +120,25 @@ void AddFrame(Image& image){
     int thickness;
     cin >> thickness;
 
-    int MaxThickness= min(image.height, image.width)/2;
-
+    int MaxThickness= min(image.height, image.width)/2;  //Validate the thickness to not exceed the half of photo 
     if (thickness <= 0 || thickness > MaxThickness)
     {
         cout << "Invalid Thickness\n";
         return;
     }
 
-    DisplayColorMenu();
-    int Color1Choice = GetColorChoice();
-
-    if (Color1Choice == -1) {
+    DisplayColorMenu();                     //displaying the 5 colors to choose      
+    int Color1Choice = GetColorChoice();    //get the value from from getcolorvalue 
+    if (Color1Choice == -1) {               //for wrong choice
         return;
     }
-
-    vector<int> Color1Value = colors[Color1Choice];
+    vector<int> Color1Value = colors[Color1Choice]; //colors[1] = white and this is the values come from map
 
     if (option == 1){
         for (int i = 0; i < image.width; ++i) {
             for (int j = 0; j < image.height; ++j) {
-                if (i < thickness ||i >= image.width - thickness ||
-                    j < thickness ||j >= image.height - thickness){
-                    for (int k = 0; k < 3; ++k) {
-                        image(i, j, k) = Color1Value[k];
-                    }
+                if (i < thickness ||i >= image.width - thickness ||j < thickness ||j >= image.height - thickness){
+                    for (int k = 0; k < 3; ++k) {image(i, j, k) = Color1Value[k];}
                 }
             }
         }
@@ -161,24 +146,20 @@ void AddFrame(Image& image){
     }
 
     int SecondColorChoice = GetColorChoice("Choose The Second Color Number: ");
-
     if (SecondColorChoice == -1) {
         return;
     }
-
     vector<int> Color2Value = colors[SecondColorChoice];
 
     for (int i = 0; i < image.width; ++i) {
         for (int j = 0; j < image.height; ++j) {
-            int layer = min(min(i, image.width - 1 - i),
-                            min(j, image.height - 1 - j));
-
-            if (layer < thickness) {
-                if (layer % 2 == 0){
+            int layer = min(min(i, image.width - 1 - i),min(j, image.height - 1 - j));  //check the layer from the edge from all directions
+            if (layer < thickness) {            //if the layer in frame zone will be colored
+                if (layer % 2 == 0){            //if layer even =color 1 else color 2 
                     for (int k = 0; k < 3; ++k) {
                         image(i, j, k) = Color1Value[k];
                     }
-                }
+                } 
                 else{
                     for (int k = 0; k < 3; ++k) {
                         image(i, j, k) = Color2Value[k];
@@ -188,7 +169,6 @@ void AddFrame(Image& image){
         }
     }
 }
-
 // --- Filter 5 Peter (FLIP IMAGE) ---
 void FlipImage(Image& image) {
     cout << "Choose Flip Direction:\n1. Horizontal\n2. Vertical\nEnter choice (1 or 2): ";
@@ -196,6 +176,7 @@ void FlipImage(Image& image) {
     cin >> choice;
 
     if (choice == 1) {
+        // Horizontal Flip
         for (int y = 0; y < image.height; y++) {
             for (int x = 0; x < image.width / 2; x++) {
                 for (int c = 0; c < 3; c++) {
@@ -203,8 +184,8 @@ void FlipImage(Image& image) {
                 }
             }
         }
-    }
-    else if (choice == 2) {
+    } else if (choice == 2) {
+        // Vertical Flip
         for (int y = 0; y < image.height / 2; y++) {
             for (int x = 0; x < image.width; x++) {
                 for (int c = 0; c < 3; c++) {
@@ -212,12 +193,10 @@ void FlipImage(Image& image) {
                 }
             }
         }
-    }
-    else {
+    } else {
         cout << "Invalid choice!\n";
     }
 }
-
 void RotateImage(Image& image)
 {
     cout << "Choose Rotation Angle:\n";
@@ -293,17 +272,14 @@ void RotateImage(Image& image)
 // --- Filter 7 Marina(LIGHTEN & DARKEN IMAGE)___
 void LightenImage(Image& image, float percentage) {
     float rate = percentage / 100.0;
-
     for (int i = 0; i < image.width; i++) {
         for (int j = 0; j < image.height; j++) {
             for (int c = 0; c < image.channels; c++) {
                 unsigned char oldcol = image.getPixel(i, j, c);
                 int newcol = oldcol + (255 - oldcol) * rate;
-
                 if (newcol > 255) {
                     newcol = 255;
                 }
-
                 image.setPixel(i, j, c, newcol);
             }
         }
@@ -312,117 +288,59 @@ void LightenImage(Image& image, float percentage) {
 
 void DarkenImage(Image& image, float percentage) {
     float rate = 1.0 - (percentage / 100.0);
-
     for (int i = 0; i < image.width; i++) {
         for (int j = 0; j < image.height; j++) {
             for (int c = 0; c < image.channels; c++) {
                 unsigned char oldcol = image.getPixel(i, j, c);
                 int newcol = oldcol * rate;
-
                 if (newcol < 0) {
                     newcol = 0;
                 }
-
                 image.setPixel(i, j, c, newcol);
             }
         }
     }
 }
-
 // Filter NO.8 Marwan Essam
-void ReSize(Image& image){
+void ReSize(Image& image){  
     cout<<"Choose your Resize Method Number: \n";
     cout<<"1.Dimensions \n";
     cout<<"2.Ratio \n";
-
     int Option ;
     cin>> Option;
-
     if(Option < 1 ||Option > 2){
         cout<<"Invalid Resize Method \n";
         return;
     }
-
-    int NewWidth ,NewHight;
-
+        int NewWidth ,NewHight;
     if(Option == 1){
         cout<<"Please Enter a New Width and Hight \n";
         cin>>NewWidth >>NewHight;
+    }else{
+    double Ratio;
+    cout<<"Enter a Ratio to Resize\n";
+    cin>>Ratio;
+    if(Ratio <=0){
+        cout<<"Invalid Ratio \n";
+        return;
     }
-    else{
-        double Ratio;
-        cout<<"Enter a Ratio to Resize\n";
-        cin>>Ratio;
-
-        if(Ratio <=0){
-            cout<<"Invalid Ratio \n";
-            return;
-        }
-
-        NewWidth =image.width * Ratio ;
-        NewHight =image.height * Ratio;
-    }
-
+    NewWidth =image.width * Ratio ;
+    NewHight =image.height * Ratio;}
     if(NewWidth <= 0 || NewHight <=0){
         cout<<"Invalid Dimensions \n";
         return;
     }
-
     Image NewImage (NewWidth ,NewHight);
-
-    for(int i = 0; i < NewImage.width; ++i){
-        for(int j = 0; j<NewImage.height; ++j){
-            int old_X = i* image.width / NewImage.width;
-            int old_Y = j * image.height / NewImage.height;
-
-            for(int k=0; k<3;++k){
-                NewImage(i,j,k)=image(old_X,old_Y,k);
+        for(int i = 0; i < NewImage.width; ++i){
+            for(int j = 0; j<NewImage.height; ++j){
+                int old_X = i* image.width / NewImage.width;
+                int old_Y = j * image.height / NewImage.height;
+                for(int k=0; k<3;++k){
+                    NewImage(i,j,k)=image(old_X,old_Y,k);
+                }
             }
         }
-    }
-
-    image = NewImage;
-}
-
-//--- Filter 11 Marina(CROP IMAGE)---
-void CropImage(Image &image) {
-    int x, y, W, H;
-
-    cout << "Enter x: ";
-    cin >> x;
-
-    cout << "Enter y: ";
-    cin >> y;
-
-    cout << "Enter W: ";
-    cin >> W;
-
-    cout << "Enter H: ";
-    cin >> H;
-
-    if (x < 0 || y < 0 || W <= 0 || H <= 0) {
-        cout << "Invalid value" << endl;
-        return;
-    }
-
-    if ((x + W) > image.width || (y + H) > image.height) {
-        cout << "Invalid crop size because it is outside the image" << endl;
-        return;
-    }
-
-    Image cropped(W, H);
-
-    for (int i = 0; i < W; i++) {
-        for (int j = 0; j < H; j++) {
-            for (int c = 0; c < image.channels; c++) {
-                cropped(i, j, c) = image(x + i, y + j, c);
-            }
-        }
-    }
-
-    image = cropped;
-
-    cout << "Image cropped successfully!" << endl;
+        image = NewImage;
 }
 
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
@@ -432,118 +350,90 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
         FilterGrayScale(CurrentImage);
         cout << "Grayscale Filter Applied Successfully\n";
         break;
-
     case 2:
         blackAndWhite(CurrentImage);
         break;
-
     case 3:
         InvertImage(CurrentImage);
         cout << "Image Inverted Successfully\n";
         break;
-
     case 4:
-        AddFrame(CurrentImage);
+         AddFrame(CurrentImage);
         break;
-
     case 5:
         FlipImage(CurrentImage);
         cout << "Image Flipped Successfully\n";
         break;
-
     case 6:
         RotateImage(CurrentImage);
         break;
-
     case 7:
         {
-            int choice;
-            float percentage;
-
-            cout << "\n== Choose Darken / Lighten Image ==\n";
-            cout << "1. Lighten Image\n";
-            cout << "2. Darken Image\n";
-            cout << "Enter your choice (1 or 2): ";
-            cin >> choice;
-
-            if (choice != 1 && choice != 2) {
-                cout << "Invalid choice for Darken/Lighten!\n";
-                break;
-            }
-
-            cout << "Enter percentage: ";
-            cin >> percentage;
-
-            if(percentage <= 0 || percentage >100){
-                cout<< "Invalid Percentage: \n";
-                break;
-            }
-
-            switch (choice) {
-            case 1:
-                LightenImage(CurrentImage, percentage);
-                cout << "Image Lightened Successfully\n";
-                break;
-
-            case 2:
-                DarkenImage(CurrentImage, percentage);
-                cout << "Image Darkened Successfully\n";
-                break;
-
-            default:
-                cout << "Invalid choice for Darken/Lighten!\n";
-                break;
-            }
-
+        int choice;
+        float percentage;
+        cout << "\n== Choose Darken / Lighten Image ==\n";
+        cout << "1. Lighten Image\n";
+        cout << "2. Darken Image\n";
+        cout << "Enter your choice (1 or 2): ";
+        cin >> choice;
+        if (choice != 1 && choice != 2) {
+            cout << "Invalid choice for Darken/Lighten!\n";
+        break;
+        }
+        cout << "Enter percentage: ";
+        cin >> percentage;
+        if(percentage <= 0 || percentage >100){
+            cout<< "Invalid Percentage: \n";
             break;
         }
 
-    case 8:
-        ReSize(CurrentImage);
+        switch (choice) {
+        case 1:
+            LightenImage(CurrentImage, percentage);
+            cout << "Image Lightened Successfully\n";
+            break;
+        case 2:
+            DarkenImage(CurrentImage, percentage);
+            cout << "Image Darkened Successfully\n";
+            break;
+        default:
+            cout << "Invalid choice for Darken/Lighten!\n";
+            break;
+        }
         break;
-
-    case 9:
-        CropImage(CurrentImage);
+    }
+    case 8: 
+            ReSize(CurrentImage);
         break;
-
-    case 10:
-        CurrentImage = LoadImage("Enter the new image name with extension:");
+    case 9:  //load a new image 
+        CurrentImage= LoadImage("Enter the new image name with extension:");
         break;
-
-    case 11:
-        {
-            cout<<"Enter a Name to Store a New Image: \n";
+    case 10: //save current Image 
+            {cout<<"Enter a Name to Store a New Image: \n";
             cout<<"And Specify Extention: (.jpg, .bmp, .png, .tga) \n";
-
             string NewImageName;
             cin>> ws;
             getline(cin,NewImageName);
-
             CurrentImage.saveImage(NewImageName);
-            break;
-        }
-
-    case 12:
-        IsRunning = false;
         break;
-
+        }
+    case 11: //exit
+            IsRunning = false ;
+        break;
+       
     default:
-        cout << "Invalid choice! Please select a number from 1 to 12.\n";
+            cout << "Invalid choice! Please select a number from 1 to 11.\n";
         break;
     }
 }
-
 int main(){
     bool IsRunning = true;
     int Choice;
-
     Image CurrentImage = LoadImage("Please Enter your Image Name: ");
-
     while (IsRunning){
         DisplayMenu();
         cin>>Choice;
         ProcessChoice(Choice , CurrentImage , IsRunning);
     }
-
     return 0;
 }
