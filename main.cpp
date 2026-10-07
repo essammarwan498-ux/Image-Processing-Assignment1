@@ -10,6 +10,7 @@ Section : S23
 #include <iostream>
 #include "Image_Class.h"
 #include <vector>
+#include <cmath>
 #include <map>
 #include <algorithm>
 using namespace std ;
@@ -340,7 +341,6 @@ void ReSize(Image& image){
         cout<<"Invalid Dimensions \n";
         return;
     }
-
     Image NewImage (NewWidth ,NewHight);
         for(int i = 0; i < NewImage.width; ++i){
             for(int j = 0; j<NewImage.height; ++j){
@@ -353,7 +353,123 @@ void ReSize(Image& image){
         }
         image = NewImage;
 }
+/*------------------------- Filter NO.12 MARO --------------------------*/
+void BlurImage(Image& image){
+    Image NewImage(image.width , image.height);
+    int radius;
+    cout<<"Enter Your Blur Level (1,2,3,4,5)\n";
+    cin>> radius;
+    if(radius<1 || radius >5){
+        cout<< "Invalid Level\n";
+        return;
+    }
+    for(int i = 0 ; i < image.width ; ++i){
+        for (int j = 0; j< image.height; ++j){
+            for(int c =0 ; c<3; ++c){
+                int sum=0, count=0;
+                for(int k= i-radius; k <= i+radius; ++k){
+                    for(int v =j - radius; v <= j+radius; ++v){
+                        if (k >= 0 && k < image.width && v >= 0 && v < image.height) {
+                            sum += image(k,v,c);
+                            count++;
+                        }
+                    }
+                }
+        NewImage(i, j, c) = sum / count;
+            }
+        }
+    }
+    image = NewImage;   
+}
+/*------------------filter No.16 MARO-------------*/
+void InfraredImage(Image& image){
+    for(int i=0;i<image.width;++i){
+        for(int j=0;j<image.height;++j){
+            image(i,j,0)= 255;
+            image(i,j,1) = 255 - image(i,j,1);
+            image(i, j,2) = 255 - image(i, j, 2);
+        }
+    }
+}
+/*Filter No. 17 MARO */
+void Skewness(Image& image){
+    float angle;
+    cout<<"Enter Your Skewness Angle: ";
+    cin>>angle;
+    float rad = angle * M_PI /180.0;
+    int maxShift = image.width * tan(rad);
+    Image NewImage(image.width, image.height + maxShift);
+    for (int i = 0; i < NewImage.width; ++i) {
+        for (int j = 0; j < NewImage.height; ++j) {
+            for (int c = 0; c < 3; ++c) {
+                NewImage(i, j, c) = 255;
+            }
+        }
+    }
+    for (int i = 0; i < image.width; ++i) {
+        int shift = i * tan(rad);
+        for (int j = 0; j < image.height; ++j) {
+            for (int c = 0; c < 3; ++c) {
+                NewImage(i, j + shift, c) = image(i, j, c);
+            }
+        }
+    }
+    image = NewImage;
+}
+void oilPainting(Image& image){
+    int radius;
+    int IntensityLevel;
+    cout<<"Please Enter Brush Size: ";
+    cin>>radius;
+    if(radius<=0){
+        cout<< "Invalid Brush Size\n";
+        return;
+    }
+    cout<<"Please Enter Intensity Level: ";
+    cin>>IntensityLevel;
+    if(IntensityLevel <=0){
+        cout<<"Invalid Intensity Level\n";
+        return;
+    }
+    Image NewImage(image.width,image.height);
+    for(int i = 0 ; i<image.width; ++i){
+        for(int j =0 ; j<image.height; ++j){
+            int IntensityCount [IntensityLevel]={0};
+            int sumR[IntensityLevel] = {0};
+            int sumG[IntensityLevel] = {0};
+            int sumB[IntensityLevel] = {0};
+            for (int k = i - radius; k <= i + radius; ++k) {
+                for (int v = j - radius; v <= j + radius; ++v) {
+                    if (k >= 0 && k < image.width && v >= 0 && v < image.height) {
+                        int r = image(k, v, 0);
+                        int g = image(k, v, 1);
+                        int b = image(k, v, 2);
 
+                        int curIntensity = ((r + g + b) / 3.0) * IntensityLevel / 255.0;
+                        if (curIntensity >= IntensityLevel) curIntensity = IntensityLevel - 1;
+
+                        IntensityCount[curIntensity]++;
+                        sumR[curIntensity] += r;
+                        sumG[curIntensity] += g;
+                        sumB[curIntensity] += b;
+                    }
+                }
+            }
+            int maxCount = 0;
+            int maxIndex = 0;
+            for (int level = 0; level < IntensityLevel; ++level) {
+                if (IntensityCount[level] > maxCount) {
+                    maxCount = IntensityCount[level];
+                    maxIndex = level;
+                }
+            }
+            NewImage(i, j, 0) = sumR[maxIndex] / maxCount;
+            NewImage(i, j, 1) = sumG[maxIndex] / maxCount;
+            NewImage(i, j, 2) = sumB[maxIndex] / maxCount;
+        }
+    }
+    image = NewImage;
+}
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
     {
@@ -415,11 +531,28 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     }
     case 8: 
             ReSize(CurrentImage);
+            cout<<"Image Resized Successfully\n";
         break;
-    case 9:  //load a new image 
+    case 12:
+            BlurImage(CurrentImage);
+            cout<<"Filter Applied Successfully\n";
+        break;
+    case 16:
+            InfraredImage(CurrentImage);
+            cout<<"Filter Applied Successfully\n";
+        break;
+    case 17:
+            Skewness(CurrentImage);
+            cout<<"Filter Applied Successfully\n";
+        break;
+    case 18:
+            oilPainting(CurrentImage);
+            cout<<"Filter Applied Successfully\n";
+        break;
+    case 19:  //load a new image 
         CurrentImage= LoadImage("Enter the new image name with extension:");
         break;
-    case 10: //save current Image 
+    case 20: //save current Image 
             {cout<<"Enter a Name to Store a New Image: \n";
             cout<<"And Specify Extention: (.jpg, .bmp, .png, .tga) \n";
             string NewImageName;
@@ -428,12 +561,12 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             CurrentImage.saveImage(NewImageName);
         break;
         }
-    case 11: //exit
+    case 21: //exit
             IsRunning = false ;
         break;
        
     default:
-            cout << "Invalid choice! Please select a number from 1 to 11.\n";
+            cout << "Invalid choice! Please select a number from 1 to 21.\n";
         break;
     }
 }
