@@ -1,0 +1,10 @@
+.vscode/
+*.exe
+*.o
+*.out
+build/
+*.jpg
+*.bmp
+*.png
+*.tga
+*phase 1
