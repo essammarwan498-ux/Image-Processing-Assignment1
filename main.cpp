@@ -354,7 +354,7 @@ void ReSize(Image& image){
         }
         image = NewImage;
 }
-// --- Filter 9 Peter (MERGE IMAGE) ---
+// --- Filter 9 Peter (MERGE IMAGES) ---
 Image MergeImages(const Image& first, const Image& second, int option) {
     int width;
     int height;
@@ -385,6 +385,24 @@ Image MergeImages(const Image& first, const Image& second, int option) {
 
     return merged;
 }
+
+void MergeFilter(Image& currentImage) {
+    Image secondImage = LoadImage("Enter the second image name with extension:");
+    int option;
+    cout << "Merge options:\n";
+    cout << "1. Resize both images to the larger dimensions\n";
+    cout << "2. Merge the common top-left area\n";
+    cout << "Enter your choice (1 or 2): ";
+    cin >> option;
+
+    if (option == 1 || option == 2) {
+        currentImage = MergeImages(currentImage, secondImage, option);
+        cout << "Images merged successfully. Save the result with option 20.\n";
+    } else {
+        cout << "Invalid merge option selected.\n";
+    }
+}
+
 /*------------------------- Filter NO.12 MARO --------------------------*/
 void BlurImage(Image& image){
     Image NewImage(image.width , image.height);
@@ -566,23 +584,8 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             cout<<"Image Resized Successfully\n";
         break;
     case 9:
-    {
-        Image secondImage = LoadImage("Enter the second image name with extension:");
-        int option;
-        cout << "Merge options:\n";
-        cout << "1. Resize both images to the larger dimensions\n";
-        cout << "2. Merge the common top-left area\n";
-        cout << "Enter your choice (1 or 2): ";
-        cin >> option;
-
-        if (option == 1 || option == 2) {
-            CurrentImage = MergeImages(CurrentImage, secondImage, option);
-            cout << "Images merged successfully. Save the result with option 20.\n";
-        } else {
-            cout << "Invalid merge option selected.\n";
-        }
+        MergeFilter(CurrentImage);
         break;
-    }
     case 12:
             BlurImage(CurrentImage);
             cout<<"Filter Applied Successfully\n";
