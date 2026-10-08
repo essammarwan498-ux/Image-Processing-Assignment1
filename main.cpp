@@ -11,6 +11,8 @@ Section : S23
 #include "Image_Class.h"
 #include <vector>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include <map>
 #include <algorithm>
 using namespace std ;
@@ -470,6 +472,74 @@ void oilPainting(Image& image){
     }
     image = NewImage;
 }
+
+void detectImageEdges(Image& image) {
+    int width = image.width;
+    int height = image.height;
+    int channels = image.channels;
+
+    vector<unsigned char> grayImage(width * height);
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int index = (y * width + x) * channels;
+            int red = image.imageData[index];
+            int green = image.imageData[index + 1];
+            int blue = image.imageData[index + 2];
+            grayImage[y * width + x] = static_cast<unsigned char>((red + green + blue) / 3);
+        }
+    }
+
+    vector<unsigned char> edgesImage(width * height);
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int nextX = (x + 1 < width) ? x + 1 : x;
+            int nextY = (y + 1 < height) ? y + 1 : y;
+            int gx = grayImage[y * width + nextX] - grayImage[y * width + x];
+            int gy = grayImage[nextY * width + x] - grayImage[y * width + x];
+            int magnitude = static_cast<int>(sqrt(static_cast<double>(gx * gx + gy * gy)));
+            edgesImage[y * width + x] = magnitude > 50 ? 255 : 0;
+        }
+    }
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int index = (y * width + x) * channels;
+            unsigned char edgeValue = edgesImage[y * width + x];
+            image.imageData[index] = edgeValue;
+            image.imageData[index + 1] = edgeValue;
+            image.imageData[index + 2] = edgeValue;
+        }
+    }
+}
+
+void wanoTVNoiseImage(Image& image) {
+    int width = image.width;
+    int height = image.height;
+    int channels = image.channels;
+
+    srand(static_cast<unsigned int>(time(nullptr)));
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int index = (y * width + x) * channels;
+            int noise = rand() % 256;
+            if (y % 2 == 0) {
+                noise = static_cast<int>(noise * 0.7);
+            }
+
+            int rollBar = static_cast<int>(sin(x * 0.05) * 30);
+            int originalAverage = (image.imageData[index] + image.imageData[index + 1] + image.imageData[index + 2]) / 3;
+            int mixed = (originalAverage * 30 + noise * 70) / 100 + rollBar;
+            int red = mixed + (rand() % 20 - 10);
+            int green = mixed + (rand() % 20 - 10);
+            int blue = mixed + (rand() % 20 - 10);
+
+            image.imageData[index] = static_cast<unsigned char>(max(0, min(255, red)));
+            image.imageData[index + 1] = static_cast<unsigned char>(max(0, min(255, green)));
+            image.imageData[index + 2] = static_cast<unsigned char>(max(0, min(255, blue)));
+        }
+    }
+}
+
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
     {
@@ -533,9 +603,17 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             ReSize(CurrentImage);
             cout<<"Image Resized Successfully\n";
         break;
+    case 10:
+            detectImageEdges(CurrentImage);
+            cout << "Edge detection applied to image.\n";
+        break;
     case 12:
             BlurImage(CurrentImage);
             cout<<"Filter Applied Successfully\n";
+        break;
+    case 14:
+            wanoTVNoiseImage(CurrentImage);
+            cout << "TV noise effect applied to image.\n";
         break;
     case 16:
             InfraredImage(CurrentImage);
