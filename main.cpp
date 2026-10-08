@@ -103,6 +103,7 @@ void DisplayColorMenu()
     cout << "4. Green\n";
     cout << "5. Red\n";
 }
+// --- Filter 9 Peter (MERGE IMAGE) ---
 Image MergeImages(const Image& first, const Image& second, int option) {
     int width;
     int height;
