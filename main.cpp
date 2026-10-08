@@ -103,6 +103,36 @@ void DisplayColorMenu()
     cout << "4. Green\n";
     cout << "5. Red\n";
 }
+Image MergeImages(const Image& first, const Image& second, int option) {
+    int width;
+    int height;
+
+    if (option == 1) {
+        width = max(first.width, second.width);
+        height = max(first.height, second.height);
+    } else {
+        width = min(first.width, second.width);
+        height = min(first.height, second.height);
+    }
+
+    Image merged(width, height);
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int firstX = option == 1 ? x * first.width / width : x;
+            int firstY = option == 1 ? y * first.height / height : y;
+            int secondX = option == 1 ? x * second.width / width : x;
+            int secondY = option == 1 ? y * second.height / height : y;
+
+            for (int channel = 0; channel < 3; ++channel) {
+                merged(x, y, channel) =
+                    (first(firstX, firstY, channel) +
+                     second(secondX, secondY, channel)) / 2;
+            }
+        }
+    }
+
+    return merged;
+}
 int GetColorChoice(const string& message = "Choose Color Number: ") {
     cout << message;
     int ColorChoice;
@@ -533,6 +563,24 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             ReSize(CurrentImage);
             cout<<"Image Resized Successfully\n";
         break;
+    case 9:
+    {
+        Image secondImage = LoadImage("Enter the second image name with extension:");
+        int option;
+        cout << "Merge options:\n";
+        cout << "1. Resize both images to the larger dimensions\n";
+        cout << "2. Merge the common top-left area\n";
+        cout << "Enter your choice (1 or 2): ";
+        cin >> option;
+
+        if (option == 1 || option == 2) {
+            CurrentImage = MergeImages(CurrentImage, secondImage, option);
+            cout << "Images merged successfully. Save the result with option 20.\n";
+        } else {
+            cout << "Invalid merge option selected.\n";
+        }
+        break;
+    }
     case 12:
             BlurImage(CurrentImage);
             cout<<"Filter Applied Successfully\n";
