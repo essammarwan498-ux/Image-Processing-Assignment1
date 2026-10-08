@@ -357,13 +357,13 @@ void ReSize(Image& image){
 void CropImage(Image& image) {
     int x, y, W, H;
 
-    cout << "Enter x: ";
+    cout << "Enter starting x(column from left): ";
     cin >> x;
-    cout << "Enter y: ";
+    cout << "Enter starting y(row from top): ";
     cin >> y;
-    cout << "Enter W: ";
+    cout << "Enter crop Width(W): ";
     cin >> W;
-    cout << "Enter H: ";
+    cout << "Enter crop Height (H): ";
     cin >> H;
 
     if (x < 0 || y < 0 ||  W <= 0 || H <= 0) {
