@@ -353,6 +353,42 @@ void ReSize(Image& image){
         }
         image = NewImage;
 }
+//---------filter 11 Marina(CROP IMAGE)---------
+void CropImage(Image& image) {
+    int x, y, W, H;
+
+    cout << "Enter starting x(column from left): ";
+    cin >> x;
+    cout << "Enter starting y(row from top): ";
+    cin >> y;
+    cout << "Enter crop Width(W): ";
+    cin >> W;
+    cout << "Enter crop Height (H): ";
+    cin >> H;
+
+    if (x < 0 || y < 0 ||  W <= 0 || H <= 0) {
+        cout << "Invalid value" << endl;
+        return;
+    }
+
+    if ((x + W) > image.width || (y + H) > image.height) {
+        cout << "Invalid crop size because it is outside the image" << endl;
+        return;
+    }
+
+    Image cropped(W, H);
+
+    for (int i = 0; i < W; i++) {
+        for (int j = 0; j < H; j++) {
+            for (int c = 0; c < image.channels; c++) {
+                cropped(i, j, c) = image(x + i, y + j, c);
+            }
+        }
+    }
+
+    image = cropped;
+    cout << "Image cropped successfully!" << endl;
+}
 /*------------------------- Filter NO.12 MARO --------------------------*/
 void BlurImage(Image& image){
     Image NewImage(image.width , image.height);
@@ -380,6 +416,38 @@ void BlurImage(Image& image){
         }
     }
     image = NewImage;   
+}
+//---------filter 15 Marina(PURPLE NIGHT EFFECT)----------
+void PurpleNightEffect(Image& image) {
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {  
+            int red = image(i, j, 0);
+            int green = image(i, j, 1);
+            int blue = image(i, j, 2);
+
+            int newRed = (int)(red * 1.1 + 15);
+            int newGreen = (int)(green * 0.6);
+            int newBlue= (int)(blue * 1.2 + 20);
+
+            if (newRed > 255)
+            {
+                newRed = 255;
+            }
+            if (newGreen > 255)
+            {
+                newGreen = 255;
+            }
+            if (newBlue > 255)
+            {
+                newBlue = 255;
+            }
+
+            image(i, j, 0) = newRed;
+            image(i, j, 1) = newGreen;
+            image(i, j, 2) = newBlue;
+        }
+    }
+    cout << "Purple Night Effect done Successfully!\n";
 }
 /*------------------filter No.16 MARO-------------*/
 void InfraredImage(Image& image){
@@ -533,9 +601,15 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             ReSize(CurrentImage);
             cout<<"Image Resized Successfully\n";
         break;
+	case 11:
+        CropImage(CurrentImage);
+        break;
     case 12:
             BlurImage(CurrentImage);
             cout<<"Filter Applied Successfully\n";
+        break;
+	case 15:
+        PurpleNightEffect(CurrentImage);
         break;
     case 16:
             InfraredImage(CurrentImage);
