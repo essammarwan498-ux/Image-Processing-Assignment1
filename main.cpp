@@ -67,14 +67,25 @@ void FilterGrayScale(Image& image) {
     }
 }
 // filter 2 Mark emad
-void blackAndWhite(Image& image) {
-    for (int _y = 0; _y < image.height; _y++) {
-        for (int _x = 0; _x < image.width; _x++) {
+void blackAndWhite(Image& image){
+    for (int y = 0; y < image.height; y++){
+        for (int x = 0; x < image.width; x++){
             int gray = 0;
-            for (int k = 0; k < 3; k++) gray += image(_x, _y, k);
-            gray /= 3;
-            unsigned char v = gray > 127 ? 255 : 0;
-            for (int k = 0; k < 3; k++) image(_x, _y, k) = v;
+
+            for (int k = 0; k < 3; k++){
+                gray += image(x, y, k);
+            }
+            gray = gray / 3;
+            int value;
+            if (gray > 127){
+                value = 255;
+            }
+            else{
+                value = 0;
+            }
+            for (int k = 0; k < 3; k++){
+                image(x, y, k) = value;
+            }
         }
     }
 }
@@ -214,72 +225,50 @@ void RotateImage(Image& image)
     cout << "1. Rotate 90 Degrees\n";
     cout << "2. Rotate 180 Degrees\n";
     cout << "3. Rotate 270 Degrees\n";
-
     int choice;
     cin >> choice;
-
-    if (choice < 1 || choice > 3)
-    {
+    if (choice < 1 || choice > 3){
         cout << "Invalid Rotation Choice\n";
         return;
     }
 
-    if (choice == 1)
-    {
+    if (choice == 1){
         Image temp(image.height, image.width);
 
-        for (int y = 0; y < image.height; y++)
-        {
-            for (int x = 0; x < image.width; x++)
-            {
-                for (int k = 0; k < 3; k++)
-                {
+        for (int y = 0; y < image.height; y++){
+            for (int x = 0; x < image.width; x++){
+                for (int k = 0; k < 3; k++){
                     temp(image.height - 1 - y, x, k) = image(x, y, k);
                 }
             }
         }
-
         image = temp;
     }
-
-    else if (choice == 2)
-    {
+    else if (choice == 2){
         Image temp(image.width, image.height);
-
-        for (int y = 0; y < image.height; y++)
-        {
-            for (int x = 0; x < image.width; x++)
-            {
-                for (int k = 0; k < 3; k++)
-                {
+        for (int y = 0; y < image.height; y++){
+            for (int x = 0; x < image.width; x++){
+                for (int k = 0; k < 3; k++){
                     temp(image.width - 1 - x, image.height - 1 - y, k)
                         = image(x, y, k);
                 }
             }
         }
-
         image = temp;
     }
 
-    else if (choice == 3)
-    {
+    else if (choice == 3){
         Image temp(image.height, image.width);
-
-        for (int y = 0; y < image.height; y++)
-        {
-            for (int x = 0; x < image.width; x++)
-            {
-                for (int k = 0; k < 3; k++)
-                {
+        for (int y = 0; y < image.height; y++){
+            for (int x = 0; x < image.width; x++){
+                for (int k = 0; k < 3; k++){
                     temp(y, image.width - 1 - x, k) = image(x, y, k);
                 }
             }
         }
-
         image = temp;
     }
 }
-
 // --- Filter 7 Marina(LIGHTEN & DARKEN IMAGE)___
 void LightenImage(Image& image, float percentage) {
     float rate = percentage / 100.0;
@@ -416,6 +405,7 @@ void Skewness(Image& image){
     }
     image = NewImage;
 }
+/*Filter No.18 Maro*/
 void oilPainting(Image& image){
     int radius;
     int IntensityLevel;
