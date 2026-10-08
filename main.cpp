@@ -473,69 +473,57 @@ void oilPainting(Image& image){
     image = NewImage;
 }
 
+// Filter No.10 Mark
 void detectImageEdges(Image& image) {
-    int width = image.width;
-    int height = image.height;
-    int channels = image.channels;
-
-    vector<unsigned char> grayImage(width * height);
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int index = (y * width + x) * channels;
-            int red = image.imageData[index];
-            int green = image.imageData[index + 1];
-            int blue = image.imageData[index + 2];
-            grayImage[y * width + x] = static_cast<unsigned char>((red + green + blue) / 3);
+    vector<unsigned char> GrayImage(image.width * image.height);
+    for (int i = 0; i < image.width; ++i) {
+        for (int j = 0; j < image.height; ++j) {
+            int gray = (image(i, j, 0) + image(i, j, 1) + image(i, j, 2)) / 3;
+            GrayImage[j * image.width + i] = gray;
         }
     }
 
-    vector<unsigned char> edgesImage(width * height);
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int nextX = (x + 1 < width) ? x + 1 : x;
-            int nextY = (y + 1 < height) ? y + 1 : y;
-            int gx = grayImage[y * width + nextX] - grayImage[y * width + x];
-            int gy = grayImage[nextY * width + x] - grayImage[y * width + x];
-            int magnitude = static_cast<int>(sqrt(static_cast<double>(gx * gx + gy * gy)));
-            edgesImage[y * width + x] = magnitude > 50 ? 255 : 0;
+    vector<unsigned char> EdgesImage(image.width * image.height);
+    for (int i = 0; i < image.width; ++i) {
+        for (int j = 0; j < image.height; ++j) {
+            int NextX = min(i + 1, image.width - 1);
+            int NextY = min(j + 1, image.height - 1);
+            int Gx = GrayImage[j * image.width + NextX] - GrayImage[j * image.width + i];
+            int Gy = GrayImage[NextY * image.width + i] - GrayImage[j * image.width + i];
+            int Magnitude = sqrt(static_cast<double>(Gx * Gx + Gy * Gy));
+            EdgesImage[j * image.width + i] = Magnitude > 50 ? 255 : 0;
         }
     }
 
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int index = (y * width + x) * channels;
-            unsigned char edgeValue = edgesImage[y * width + x];
-            image.imageData[index] = edgeValue;
-            image.imageData[index + 1] = edgeValue;
-            image.imageData[index + 2] = edgeValue;
+    for (int i = 0; i < image.width; ++i) {
+        for (int j = 0; j < image.height; ++j) {
+            for (int k = 0; k < 3; ++k) {
+                image(i, j, k) = EdgesImage[j * image.width + i];
+            }
         }
     }
 }
 
+// Filter No.14 Mark
 void wanoTVNoiseImage(Image& image) {
-    int width = image.width;
-    int height = image.height;
-    int channels = image.channels;
-
-    srand(static_cast<unsigned int>(time(nullptr)));
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int index = (y * width + x) * channels;
+    srand((unsigned)time(0));
+    for (int i = 0; i < image.width; ++i) {
+        for (int j = 0; j < image.height; ++j) {
             int noise = rand() % 256;
-            if (y % 2 == 0) {
-                noise = static_cast<int>(noise * 0.7);
+            if (j % 2 == 0) {
+                noise = noise * 0.7;
             }
 
-            int rollBar = static_cast<int>(sin(x * 0.05) * 30);
-            int originalAverage = (image.imageData[index] + image.imageData[index + 1] + image.imageData[index + 2]) / 3;
-            int mixed = (originalAverage * 30 + noise * 70) / 100 + rollBar;
+            int rollBar = sin(i * 0.05) * 30;
+            int originalAvg = (image(i, j, 0) + image(i, j, 1) + image(i, j, 2)) / 3;
+            int mixed = (originalAvg * 30 + noise * 70) / 100 + rollBar;
             int red = mixed + (rand() % 20 - 10);
             int green = mixed + (rand() % 20 - 10);
             int blue = mixed + (rand() % 20 - 10);
 
-            image.imageData[index] = static_cast<unsigned char>(max(0, min(255, red)));
-            image.imageData[index + 1] = static_cast<unsigned char>(max(0, min(255, green)));
-            image.imageData[index + 2] = static_cast<unsigned char>(max(0, min(255, blue)));
+            image(i, j, 0) = max(0, min(255, red));
+            image(i, j, 1) = max(0, min(255, green));
+            image(i, j, 2) = max(0, min(255, blue));
         }
     }
 }
