@@ -1,9 +1,9 @@
 /*
-========================Part 1=========================================
-1)Marwan Essam Abdulrahman El-Sayed: 20251383 || Filters 4,8
-2)Peter Gawdat Habib:                20250128 || Filters 1,5
-3)Mark Emad Raouf:                   20250515 || Filters 2,6
-4)Marina Girgis Salama:              20250518 || Filters 3,7
+========================Part 2=========================================
+1)Marwan Essam Abdulrahman El-Sayed: 20251383 || Filters 4,8,12,16,17,18
+2)Peter Gawdat Habib:                20250128 || Filters 1,5,9,13
+3)Mark Emad Raouf:                   20250515 || Filters 2,6,10,14
+4)Marina Girgis Salama:              20250518 || Filters 3,7,11,15 
 Section : S23
 =======================================================================
 */
@@ -375,7 +375,7 @@ Image MergeImages(const Image& first, const Image& second, int option) {
 
     return merged;
 }
-void MergeFilter(Image& currentImage) {
+void MergeFilter(Image& image) {
     Image secondImage = LoadImage("Enter the second image name with extension:");
     int option;
     cout << "Merge options:\n";
@@ -385,7 +385,7 @@ void MergeFilter(Image& currentImage) {
     cin >> option;
 
     if (option == 1 || option == 2) {
-        currentImage = MergeImages(currentImage, secondImage, option);
+        image = MergeImages(image, secondImage, option);
         cout << "Images merged successfully. Save the result with option 20.\n";
     } else {
         cout << "Invalid merge option selected.\n";
@@ -393,26 +393,26 @@ void MergeFilter(Image& currentImage) {
 }
 
 //---------filter 10 mark-----------------------
-void DetectEdge(Image& currentimage)
+void DetectEdge(Image& image)
 {
-    for (int i = 0; i < currentimage.height; i++){
-        for (int j = 0; j < currentimage.width; j++){
+    for (int i = 0; i < image.height; i++){
+        for (int j = 0; j < image.width; j++){
             unsigned int avg = 0;
             for (int k = 0; k < 3; k++){
-                avg += currentimage(i, j, k);
+                avg += image(i, j, k);
             }
             avg = avg / 3;
             for (int k = 0; k < 3; k++){
-                currentimage(i, j, k) = avg;
+                image(i, j, k) = avg;
             }
         }
     }
-    Image neighbor(currentimage.width, currentimage.height);
-            for(int i = 0 ;i<currentimage.height - 1; i++){
-                for (int j = 0; j < currentimage.width - 1; j++){
-                    int currentPixel = currentimage(i, j, 0);
-                    int rightNeighbor = currentimage(i + 1, j, 0);
-                    int bottomNeighbor = currentimage(i, j + 1, 0);
+    Image neighbor(image.width, image.height);
+            for(int i = 0 ;i< image.height - 1; i++){
+                for (int j = 0; j < image.width - 1; j++){
+                    int currentPixel = image(i, j, 0);
+                    int rightNeighbor = image(i + 1, j, 0);
+                    int bottomNeighbor = image(i, j + 1, 0);
                     int rightdiff = abs(currentPixel - rightNeighbor);
                     int bottomdiff = abs(currentPixel - bottomNeighbor);
                     if (rightdiff >= 30 || bottomdiff>=30) {
@@ -427,7 +427,7 @@ void DetectEdge(Image& currentimage)
                     }
                 }
             }
-            currentimage = neighbor;
+            image = neighbor;
 }
 //---------filter 11 Marina(CROP IMAGE)---------
 void CropImage(Image& image) {
@@ -495,34 +495,34 @@ void BlurImage(Image& image){
 }
 
 //   ----- Filter 13 Peter (WANO SUNLIGHT) -----
-void applyWanoSunlightFilter(Image& img) {
-    for (int i = 0; i < img.width; ++i) {
-        for (int j = 0; j < img.height; ++j) {
-            int r = img(i, j, 0);
-            int g = img(i, j, 1);
-            int b = img(i, j, 2);
+void applyWanoSunlightFilter(Image& image) {
+    for (int i = 0; i < image.width; ++i) {
+        for (int j = 0; j < image.height; ++j) {
+            int r = image(i, j, 0);
+            int g = image(i, j, 1);
+            int b = image(i, j, 2);
 
             int newR = min(255, (int)(r * 1.25 + 20));
             int newG = min(255, (int)(g * 1.15 + 10));
             int newB = max(0,   (int)(b * 0.75));
 
-            img(i, j, 0) = newR;
-            img(i, j, 1) = newG;
-            img(i, j, 2) = newB;
+            image(i, j, 0) = newR;
+            image(i, j, 1) = newG;
+            image(i, j, 2) = newB;
         }
     }
 }
 
 //---------filter 14 mark---------------------------------
-void TVscreen(Image& currentimage)
+void TVscreen(Image& image)
 {
-    for (int i = 0; i < currentimage.width; i++) {
-        for (int j = 0; j < currentimage.height; j++) {
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
             if (j % 3 == 0)
             {
-                currentimage(i, j, 0) = currentimage(i, j, 0) / 2;
-                currentimage(i, j, 1) = currentimage(i, j, 1) / 2;
-                currentimage(i, j, 2) = currentimage(i, j, 2) / 2;
+                image(i, j, 0) = image(i, j, 0) / 2;
+                image(i, j, 1) = image(i, j, 1) / 2;
+                image(i, j, 2) = image(i, j, 2) / 2;
             }
         }
     }
@@ -654,25 +654,28 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
     {
     case 1 :
-        FilterGrayScale(CurrentImage);
-        cout << "Grayscale Filter Applied Successfully\n";
+            FilterGrayScale(CurrentImage);
+            cout << "Grayscale Filter Applied Successfully\n";
         break;
     case 2:
-        blackAndWhite(CurrentImage);
+            blackAndWhite(CurrentImage);
+            cout<<"Black and White Filter Added Successfully\n";
         break;
     case 3:
-        InvertImage(CurrentImage);
-        cout << "Image Inverted Successfully\n";
+            InvertImage(CurrentImage);
+            cout << "Image Inverted Successfully\n";
         break;
     case 4:
-         AddFrame(CurrentImage);
+            AddFrame(CurrentImage);
+            cout<< "Frame Added Successfully\n";
         break;
     case 5:
-        FlipImage(CurrentImage);
-        cout << "Image Flipped Successfully\n";
+            FlipImage(CurrentImage);
+            cout << "Image Flipped Successfully\n";
         break;
     case 6:
-        RotateImage(CurrentImage);
+            RotateImage(CurrentImage);
+            cout<< "Image Rotated Successfully\n";
         break;
     case 7:
         {
@@ -714,15 +717,16 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             cout<<"Image Resized Successfully\n";
         break;
     case 9:
-        MergeFilter(CurrentImage);
-        cout << "Images Merged Successfully\n";
+            MergeFilter(CurrentImage);
+            cout << "Images Merged Successfully\n";
         break;
     case 10:
             DetectEdge(CurrentImage);
             cout << "Edge detection applied to image.\n";
         break;
 	case 11:
-        CropImage(CurrentImage);
+            CropImage(CurrentImage);
+            cout<< "Image Cropped Successfully\n";
         break;
     case 12:
             BlurImage(CurrentImage);
@@ -731,7 +735,7 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     case 13:
             applyWanoSunlightFilter(CurrentImage);
             cout<<"Filter Applied Successfully\n";
-            break;
+        break;
     case 14:
             TVscreen(CurrentImage);
             cout << "TV noise effect applied to image.\n";
