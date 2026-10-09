@@ -644,7 +644,7 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             cout<<"Image Resized Successfully\n";
         break;
     case 10:
-            detectImageEdges(CurrentImage);
+            DetectEdge(CurrentImage);
             cout << "Edge detection applied to image.\n";
         break;
 	case 11:
@@ -655,7 +655,7 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             cout<<"Filter Applied Successfully\n";
         break;
     case 14:
-            wanoTVNoiseImage(CurrentImage);
+            TVscreen(CurrentImage);
             cout << "TV noise effect applied to image.\n";
         break;
 	case 15:
