@@ -375,8 +375,6 @@ Image MergeImages(const Image& first, const Image& second, int option) {
 
     return merged;
 }
-
-// filter 9 peter 
 void MergeFilter(Image& currentImage) {
     Image secondImage = LoadImage("Enter the second image name with extension:");
     int option;
@@ -729,17 +727,6 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     case 12:
             BlurImage(CurrentImage);
             cout<<"Filter Applied Successfully\n";
-        break;
-    case 13:
-            applyWanoSunlightFilter(CurrentImage);
-            cout<<"Filter Applied Successfully\n";
-            break;
-    case 14:
-            
-        break;
-    case 15:
-            PurpleNightEffect(CurrentImage);
-            cout<<"Filter Applied Successfully\n";       
         break;
     case 13:
             applyWanoSunlightFilter(CurrentImage);
