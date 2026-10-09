@@ -387,6 +387,7 @@ Image MergeImages(const Image& first, const Image& second, int option) {
     return merged;
 }
 
+// filter 9 peter 
 void MergeFilter(Image& currentImage) {
     Image secondImage = LoadImage("Enter the second image name with extension:");
     int option;
