@@ -11,8 +11,6 @@ Section : S23
 #include "Image_Class.h"
 #include <vector>
 #include <cmath>
-#include <cstdlib>
-#include <ctime>
 #include <map>
 #include <algorithm>
 using namespace std ;
