@@ -580,61 +580,6 @@ void oilPainting(Image& image){
     image = NewImage;
 }
 
-// Filter No.10 Mark
-void detectImageEdges(Image& image) {
-    vector<unsigned char> GrayImage(image.width * image.height);
-    for (int i = 0; i < image.width; ++i) {
-        for (int j = 0; j < image.height; ++j) {
-            int gray = (image(i, j, 0) + image(i, j, 1) + image(i, j, 2)) / 3;
-            GrayImage[j * image.width + i] = gray;
-        }
-    }
-
-    vector<unsigned char> EdgesImage(image.width * image.height);
-    for (int i = 0; i < image.width; ++i) {
-        for (int j = 0; j < image.height; ++j) {
-            int NextX = min(i + 1, image.width - 1);
-            int NextY = min(j + 1, image.height - 1);
-            int Gx = GrayImage[j * image.width + NextX] - GrayImage[j * image.width + i];
-            int Gy = GrayImage[NextY * image.width + i] - GrayImage[j * image.width + i];
-            int Magnitude = sqrt(static_cast<double>(Gx * Gx + Gy * Gy));
-            EdgesImage[j * image.width + i] = Magnitude > 50 ? 255 : 0;
-        }
-    }
-
-    for (int i = 0; i < image.width; ++i) {
-        for (int j = 0; j < image.height; ++j) {
-            for (int k = 0; k < 3; ++k) {
-                image(i, j, k) = EdgesImage[j * image.width + i];
-            }
-        }
-    }
-}
-
-// Filter No.14 Mark
-void wanoTVNoiseImage(Image& image) {
-    srand((unsigned)time(0));
-    for (int i = 0; i < image.width; ++i) {
-        for (int j = 0; j < image.height; ++j) {
-            int noise = rand() % 256;
-            if (j % 2 == 0) {
-                noise = noise * 0.7;
-            }
-
-            int rollBar = sin(i * 0.05) * 30;
-            int originalAvg = (image(i, j, 0) + image(i, j, 1) + image(i, j, 2)) / 3;
-            int mixed = (originalAvg * 30 + noise * 70) / 100 + rollBar;
-            int red = mixed + (rand() % 20 - 10);
-            int green = mixed + (rand() % 20 - 10);
-            int blue = mixed + (rand() % 20 - 10);
-
-            image(i, j, 0) = max(0, min(255, red));
-            image(i, j, 1) = max(0, min(255, green));
-            image(i, j, 2) = max(0, min(255, blue));
-        }
-    }
-}
-
 void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
     switch (Choice)
     {
