@@ -342,6 +342,43 @@ void ReSize(Image& image){
         }
         image = NewImage;
 }
+//---------filter 10 mark-----------------------
+void DetectEdge(Image& currentimage)
+{
+    for (int i = 0; i < currentimage.height; i++){
+        for (int j = 0; j < currentimage.width; j++){
+            unsigned int avg = 0;
+            for (int k = 0; k < 3; k++){
+                avg += currentimage(i, j, k);
+            }
+            avg = avg / 3;
+            for (int k = 0; k < 3; k++){
+                currentimage(i, j, k) = avg;
+            }
+        }
+    }
+    Image neighbor(currentimage.width, currentimage.height);
+            for(int i = 0 ;i<currentimage.height - 1; i++){
+                for (int j = 0; j < currentimage.width - 1; j++){
+                    int currentPixel = currentimage(i, j, 0);
+                    int rightNeighbor = currentimage(i + 1, j, 0);
+                    int bottomNeighbor = currentimage(i, j + 1, 0);
+                    int rightdiff = abs(currentPixel - rightNeighbor);
+                    int bottomdiff = abs(currentPixel - bottomNeighbor);
+                    if (rightdiff >= 30 || bottomdiff>=30) {
+                            neighbor(i, j, 0) = 0;
+                            neighbor(i, j, 1) = 0;
+                            neighbor(i, j, 2) = 0;
+                    }
+                    else{
+                        neighbor(i, j, 0) = 255;
+                        neighbor(i, j, 1) = 255;
+                        neighbor(i, j, 2) = 255;
+                    }
+                }
+            }
+            currentimage = neighbor;
+}
 //---------filter 11 Marina(CROP IMAGE)---------
 void CropImage(Image& image) {
     int x, y, W, H;
@@ -405,6 +442,20 @@ void BlurImage(Image& image){
         }
     }
     image = NewImage;   
+}
+//---------filter 14 mark---------------------------------
+void TVscreen(Image& currentimage)
+{
+    for (int i = 0; i < currentimage.width; i++) {
+        for (int j = 0; j < currentimage.height; j++) {
+            if (j % 3 == 0)
+            {
+                currentimage(i, j, 0) = currentimage(i, j, 0) / 2;
+                currentimage(i, j, 1) = currentimage(i, j, 1) / 2;
+                currentimage(i, j, 2) = currentimage(i, j, 2) / 2;
+            }
+        }
+    }
 }
 //---------filter 15 Marina(PURPLE NIGHT EFFECT)----------
 void PurpleNightEffect(Image& image) {
