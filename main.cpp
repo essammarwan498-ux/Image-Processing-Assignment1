@@ -114,6 +114,7 @@ void DisplayColorMenu()
     cout << "4. Green\n";
     cout << "5. Red\n";
 }
+
 int GetColorChoice(const string& message = "Choose Color Number: ") {
     cout << message;
     int ColorChoice;
@@ -219,6 +220,7 @@ void FlipImage(Image& image) {
         cout << "Invalid choice!\n";
     }
 }
+// --- Filter 6 Mark (ROTATE IMAGE) ---
 void RotateImage(Image& image)
 {
     cout << "Choose Rotation Angle:\n";
@@ -342,6 +344,56 @@ void ReSize(Image& image){
         }
         image = NewImage;
 }
+//    ----- Filter 9 Peter (MERGE IMAGES) -----
+Image MergeImages(const Image& first, const Image& second, int option) {
+    int width;
+    int height;
+
+    if (option == 1) {
+        width = max(first.width, second.width);
+        height = max(first.height, second.height);
+    } else {
+        width = min(first.width, second.width);
+        height = min(first.height, second.height);
+    }
+
+    Image merged(width, height);
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int firstX = option == 1 ? x * first.width / width : x;
+            int firstY = option == 1 ? y * first.height / height : y;
+            int secondX = option == 1 ? x * second.width / width : x;
+            int secondY = option == 1 ? y * second.height / height : y;
+
+            for (int channel = 0; channel < 3; ++channel) {
+                merged(x, y, channel) =
+                    (first(firstX, firstY, channel) +
+                     second(secondX, secondY, channel)) / 2;
+            }
+        }
+    }
+
+    return merged;
+}
+
+// filter 9 peter 
+void MergeFilter(Image& currentImage) {
+    Image secondImage = LoadImage("Enter the second image name with extension:");
+    int option;
+    cout << "Merge options:\n";
+    cout << "1. Resize both images to the larger dimensions\n";
+    cout << "2. Merge the common top-left area\n";
+    cout << "Enter your choice (1 or 2): ";
+    cin >> option;
+
+    if (option == 1 || option == 2) {
+        currentImage = MergeImages(currentImage, secondImage, option);
+        cout << "Images merged successfully. Save the result with option 20.\n";
+    } else {
+        cout << "Invalid merge option selected.\n";
+    }
+}
+
 //---------filter 10 mark-----------------------
 void DetectEdge(Image& currentimage)
 {
@@ -443,6 +495,26 @@ void BlurImage(Image& image){
     }
     image = NewImage;   
 }
+
+//   ----- Filter 13 Peter (WANO SUNLIGHT) -----
+void applyWanoSunlightFilter(Image& img) {
+    for (int i = 0; i < img.width; ++i) {
+        for (int j = 0; j < img.height; ++j) {
+            int r = img(i, j, 0);
+            int g = img(i, j, 1);
+            int b = img(i, j, 2);
+
+            int newR = min(255, (int)(r * 1.25 + 20));
+            int newG = min(255, (int)(g * 1.15 + 10));
+            int newB = max(0,   (int)(b * 0.75));
+
+            img(i, j, 0) = newR;
+            img(i, j, 1) = newG;
+            img(i, j, 2) = newB;
+        }
+    }
+}
+
 //---------filter 14 mark---------------------------------
 void TVscreen(Image& currentimage)
 {
@@ -643,6 +715,10 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             ReSize(CurrentImage);
             cout<<"Image Resized Successfully\n";
         break;
+    case 9:
+        MergeFilter(CurrentImage);
+        cout << "Images Merged Successfully\n";
+        break;
     case 10:
             DetectEdge(CurrentImage);
             cout << "Edge detection applied to image.\n";
@@ -654,6 +730,21 @@ void ProcessChoice(int Choice , Image& CurrentImage , bool& IsRunning){
             BlurImage(CurrentImage);
             cout<<"Filter Applied Successfully\n";
         break;
+    case 13:
+            applyWanoSunlightFilter(CurrentImage);
+            cout<<"Filter Applied Successfully\n";
+            break;
+    case 14:
+            
+        break;
+    case 15:
+            PurpleNightEffect(CurrentImage);
+            cout<<"Filter Applied Successfully\n";       
+        break;
+    case 13:
+            applyWanoSunlightFilter(CurrentImage);
+            cout<<"Filter Applied Successfully\n";
+            break;
     case 14:
             TVscreen(CurrentImage);
             cout << "TV noise effect applied to image.\n";
