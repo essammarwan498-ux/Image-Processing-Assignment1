@@ -85,8 +85,8 @@ Before running the application, make sure you have:
 This project was developed collaboratively by a team of three students:
 
 - **Marwan Essam**
-- **Peter**
-- **Marina**
+- **Peter Gawdat**
+- **Marina George**
 
 Team members collaborated on implementing image processing algorithms, application development, and interface design.
 
