@@ -86,7 +86,7 @@ This project was developed collaboratively by a team of three students:
 
 - **Marwan Essam**
 - **Peter Gawdat**
-- **Marina George**
+- **Marina Girgis**
 
 Team members collaborated on implementing image processing algorithms, application development, and interface design.
 
